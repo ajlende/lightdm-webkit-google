@@ -3,6 +3,7 @@ var login = (function (lightdm, $) {
     var password = null
     var $user = $('#user');
     var $pass = $('#pass');
+    var $session = $('#session');
 
     // private functions
     var setup_users_list = function () {
@@ -20,6 +21,7 @@ var login = (function (lightdm, $) {
             );
         });
     };
+
     var select_user_from_list = function (idx) {
         var idx = idx || 0;
 
@@ -36,6 +38,22 @@ var login = (function (lightdm, $) {
 
         $pass.trigger('focus');
     };
+
+    var setup_sessions_list = function() {
+        var $list = $session;
+        var to_append = null;
+        $.each(lightdm.sessions, function(i) {
+          var session = lightdm.sessions[i];
+            $list.append(
+                '<option value="' +
+                session.key +
+                '">' +
+                session.name +
+                '</option>'
+            );
+        });
+    };
+
     var find_and_display_user_picture = function (idx) {
         $('.profile-img').attr(
             'src',
@@ -60,7 +78,7 @@ var login = (function (lightdm, $) {
             show_prompt('Logged in');
             lightdm.login(
                 lightdm.authentication_user,
-                lightdm.default_session
+                $session.val()
             );
         }
     };
@@ -78,6 +96,7 @@ var login = (function (lightdm, $) {
         $(function () {
             setup_users_list();
             select_user_from_list();
+            setup_sessions_list();
 
             $user.on('change', function (e) {
                 e.preventDefault();
